@@ -1,15 +1,33 @@
-document.getElementById('addMessageButton').addEventListener('click', function() {
-    const messageInput = document.getElementById('messageInput');
-    const messageText = messageInput.value.trim();
+document.addEventListener('DOMContentLoaded', () => {
+    const wishForm = document.getElementById('wishForm');
+    const wishInput = document.getElementById('wishInput');
+    const nameInput = document.getElementById('nameInput');
+    const wishList = document.getElementById('wishList');
 
-    if (messageText) {
-        const messagesDiv = document.getElementById('messages');
-        const newMessage = document.createElement('div');
-        newMessage.classList.add('message');
-        newMessage.textContent = messageText;
-        messagesDiv.appendChild(newMessage);
-        messageInput.value = ''; // Clear the input
-    } else {
-        alert('Please enter a message!');
+    // Load wishes from local storage
+    loadWishes();
+
+    wishForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const wish = wishInput.value;
+        const name = nameInput.value;
+
+        // Save wish to local storage
+        saveWish(wish, name);
+
+        // Clear input fields
+        wishInput.value = '';
+        nameInput.value = '';
+    });
+
+    function saveWish(wish, name) {
+        const wishes = JSON.parse(localStorage.getItem('wishes')) || [];
+        wishes.push({ wish, name, date: new Date().toLocaleString() });
+        localStorage.setItem('wishes', JSON.stringify(wishes));
+        loadWishes();
     }
-});
+
+    function loadWishes() {
+        const wishes = JSON.parse(localStorage.getItem('wishes')) || [];
+        wishList.innerHTML = '';
+        wishes.forEach(({ wish, name
